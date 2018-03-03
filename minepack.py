@@ -4,13 +4,22 @@ from bz2 import decompress
 import getpass
 from io import BytesIO
 import json
-from os import mkdir
+from os import mkdir, getenv
 from os.path import exists
 import requests
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv(), verbose=True)
 
 def getTwitchLogin():
-  username = input("What is your Twitch username? ")
-  password = getpass.getpass()
+  if getenv("USERNAME"):
+    username = getenv("USERNAME")
+  else:
+    username = input("What is your Twitch username? ")
+  
+  if getenv("PASSWORD"):
+    password = getenv("PASSWORD")
+  else:
+    password = getpass.getpass()
 
   if len(username) == 0 or len(password) == 0:
     print("Either username or password was blank, please try again.")
@@ -89,8 +98,6 @@ def main():
 
   username, password = getTwitchLogin()
   userID, token = getTokenFromTwitch(username, password)
-
-  print(token)
 
   addonID = getAddonID()
 
