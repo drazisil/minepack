@@ -7,6 +7,7 @@ import json
 from os import mkdir, getenv
 from os.path import exists
 import requests
+import xml.etree.ElementTree as ET
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv(), verbose=True)
 
@@ -29,12 +30,17 @@ def getTwitchLogin():
   return username, password
 
 def getTokenFromTwitch(username, password):
-  payload = {'Username': username, 'Password': password}
+  if getenv("USERID") and getenv("TOKEN"):
+      userID = getenv("USERID")
+      token = getenv("TOKEN")
+  else:
+    payload = {'Username': username, 'Password': password}
 
-  r = requests.post("https://logins-v1.curseapp.net/login", data=payload)
-  responseJSON = r.json()
-  userID = responseJSON['Session']['UserID']
-  token = responseJSON['Session']['Token']
+    r = requests.post("https://logins-v1.curseapp.net/login", data=payload)
+    responseJSON = r.json()
+    userID = responseJSON['Session']['UserID']
+    token = responseJSON['Session']['Token']
+
   return userID, token
 
 def getAddonID():
