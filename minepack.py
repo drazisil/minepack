@@ -7,8 +7,6 @@ import json
 from os import mkdir
 from os.path import exists
 import requests
-from zeep import Client, xsd
-from lxml import etree
 
 def getTwitchLogin():
   username = input("What is your Twitch username? ")

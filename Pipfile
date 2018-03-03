@@ -13,8 +13,6 @@ python_version = "3.5"
 [packages]
 
 requests = "*"
-zeep = "*"
-lxml = "*"
 
 
 [dev-packages]
