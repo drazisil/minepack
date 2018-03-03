@@ -12,6 +12,11 @@ def getTwitchLogin():
   username = input("What is your Twitch username? ")
   password = getpass.getpass()
 
+  if len(username) == 0 or len(password) == 0:
+    print("Either username or password was blank, please try again.")
+    getTwitchLogin()
+    pass
+
   return username, password
 
 def getTokenFromTwitch(username, password):
@@ -22,6 +27,10 @@ def getTokenFromTwitch(username, password):
   userID = responseJSON['Session']['UserID']
   token = responseJSON['Session']['Token']
   return userID, token
+
+def getAddonID():
+  addonID = input("What the modpack id? ")
+  return addonID
 
 def createCacheDirectory(cacheDirectyPath):
   
@@ -44,7 +53,7 @@ def updateModListJSON(curseCompleteModListURL, modListJSONPath):
       f.write(decompressedData)
   return modListJSON
 
-def getAllFilesForAddon(userID, Token, addonID):
+def getAllFilesForAddon(userID, token, addonID):
   getAllFilesForAddonPayload = """<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:add="http://addonservice.curse.com/">
    <soap:Header xmlns:wsa="http://www.w3.org/2005/08/addressing">
      <AuthenticationToken xmlns="urn:Curse.FriendsService:v1" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
@@ -80,6 +89,12 @@ def main():
 
   username, password = getTwitchLogin()
   userID, token = getTokenFromTwitch(username, password)
+
+  print(token)
+
+  addonID = getAddonID()
+
+  getAllFilesForAddon(userID, token, addonID)
 
 
 if __name__ == "__main__":
