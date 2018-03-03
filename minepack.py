@@ -14,6 +14,15 @@ def getTwitchLogin():
 
   return username, password
 
+def getTokenFromTwitch(username, password):
+  payload = {'Username': username, 'Password': password}
+
+  r = requests.post("https://logins-v1.curseapp.net/login", data=payload)
+  responseJSON = r.json()
+  userID = responseJSON['Session']['UserID']
+  token = responseJSON['Session']['Token']
+  return userID, token
+
 def createCacheDirectory(cacheDirectyPath):
   
   if exists(cacheDirectyPath):
@@ -68,6 +77,9 @@ def main():
   createCacheDirectory('cache')
   modListJSON = updateModListJSON(curseCompleteModListURL, modListJSONPath)
   print(len(modListJSON['data']))
+
+  username, password = getTwitchLogin()
+  userID, token = getTokenFromTwitch(username, password)
 
 
 if __name__ == "__main__":
