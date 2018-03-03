@@ -3,6 +3,7 @@
 from bz2 import decompress
 import getpass
 from io import BytesIO
+import json
 from os import mkdir
 from os.path import exists
 import requests
@@ -24,19 +25,23 @@ def createCacheDirectory(cacheDirectyPath):
 def updateModListJSON(curseCompleteModListURL, modListJSONPath):
   if exists(modListJSONPath):
     print('Mod list JSON already exists')
+    modListJSON = json.load(open(modListJSONPath))
   else:
     print('Mod list JSON not exist, fetching it')
     r = requests.get(curseCompleteModListURL)
+    decompressedData = decompress(r.content)
+    modListJSON = json.loads(decompressedData)
     with open(modListJSONPath, 'wb') as f:
-      f.write(decompress(r.content))
-    
+      f.write(decompressedData)
+  return modListJSON
 
 curseCompleteModListURL = "http://clientupdate-v6.cursecdn.com/feed/addons/432/v10/complete.json.bz2"
 modListJSONPath = 'cache/complete.json'
 
 def main():
   createCacheDirectory('cache')
-  updateModListJSON(curseCompleteModListURL, modListJSONPath)
+  modListJSON = updateModListJSON(curseCompleteModListURL, modListJSONPath)
+  print(len(modListJSON['data']))
 
 if __name__ == "__main__":
     # execute only if run as a script
