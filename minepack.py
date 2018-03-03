@@ -37,6 +37,32 @@ def updateModListJSON(curseCompleteModListURL, modListJSONPath):
       f.write(decompressedData)
   return modListJSON
 
+def getAllFilesForAddon(userID, Token, addonID):
+  getAllFilesForAddonPayload = """<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:add="http://addonservice.curse.com/">
+   <soap:Header xmlns:wsa="http://www.w3.org/2005/08/addressing">
+     <AuthenticationToken xmlns="urn:Curse.FriendsService:v1" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+   	  <ApiKey i:nil="true"></ApiKey>
+   	  <Token>{token}</Token>
+   	  <UserID>{userID}</UserID>
+     </AuthenticationToken>
+   	 <wsa:Action>http://addonservice.curse.com/IAddOnService/GetAllFilesForAddOn</wsa:Action>
+   </soap:Header>
+   <soap:Body>
+      <add:GetAllFilesForAddOn>
+        <add:addOnID>{addonID}</add:addOnID>
+      </add:GetAllFilesForAddOn>
+   </soap:Body>
+</soap:Envelope>""".format(userID=userID, token=token, addonID=str(addonID))
+
+
+
+  print(getAllFilesForAddonPayload)
+  headers = {'content-type': 'application/soap+xml'}
+  r = requests.post('https://addons.forgesvc.net/AddOnService.svc/soap12', headers=headers, data=getAllFilesForAddonPayload)
+
+  print(r.text)
+  pass
+
 curseCompleteModListURL = "http://clientupdate-v6.cursecdn.com/feed/addons/432/v10/complete.json.bz2"
 modListJSONPath = 'cache/complete.json'
 
@@ -44,26 +70,7 @@ def main():
   createCacheDirectory('cache')
   modListJSON = updateModListJSON(curseCompleteModListURL, modListJSONPath)
   print(len(modListJSON['data']))
-  client = Client('https://addons.forgesvc.net/AddOnService.svc?singleWsdl')
 
-  with client.options(raw_response=True):
-    client.service2 = client.bind('AddOnService', 'WsHttpAddOnServiceEndpoint')
-    header = xsd.Element(
-      '{http://test.python-zeep.org}auth',
-        xsd.ComplexType([
-          xsd.Element(
-            '{http://test.python-zeep.org}username',
-            xsd.String()),
-        ])
-    )
-    header_value = header(username='mvantellingen')
-    payload = client.create_message(client.service2, 'ListFeeds', _soapheaders=[header_value])
-
-    print(etree.tostring(payload, pretty_print=True).decode())
-
-    # response is now a regular requests.Response object
-    # print(response.status_code)
-    # print(response.content)
 
 if __name__ == "__main__":
     # execute only if run as a script
