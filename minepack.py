@@ -7,6 +7,7 @@ import json
 from os import mkdir
 from os.path import exists
 import requests
+from zeep import Client, xsd
 
 def getTwitchLogin():
   username = input("What is your Twitch username? ")
@@ -42,6 +43,15 @@ def main():
   createCacheDirectory('cache')
   modListJSON = updateModListJSON(curseCompleteModListURL, modListJSONPath)
   print(len(modListJSON['data']))
+  client = Client('https://addons.forgesvc.net/AddOnService.svc?singleWsdl')
+
+  with client.options(raw_response=True):
+      client.service2 = client.bind('AddOnService', 'WsHttpAddOnServiceEndpoint')
+      response = client.service2.ListFeeds()
+
+      # response is now a regular requests.Response object
+      print(response.status_code)
+      print(response.content)
 
 if __name__ == "__main__":
     # execute only if run as a script
