@@ -85,14 +85,10 @@ def getAllFilesForAddon(userID, token, addonID):
    </soap:Body>
 </soap:Envelope>""".format(userID=userID, token=token, addonID=str(addonID))
 
-
-
-  print(getAllFilesForAddonPayload)
   headers = {'content-type': 'application/soap+xml'}
   r = requests.post('https://addons.forgesvc.net/AddOnService.svc/soap12', headers=headers, data=getAllFilesForAddonPayload)
-
-  print(r.text)
-  pass
+  r.headers.get('content-type')
+  return(r.text)
 
 curseCompleteModListURL = "http://clientupdate-v6.cursecdn.com/feed/addons/432/v10/complete.json.bz2"
 modListJSONPath = 'cache/complete.json'
@@ -107,8 +103,12 @@ def main():
 
   addonID = getAddonID()
 
-  getAllFilesForAddon(userID, token, addonID)
+  fileListingXML = getAllFilesForAddon(userID, token, addonID)
 
+  root = ET.fromstring(fileListingXML)
+
+  for child in root[1][0][0]:
+    print(child[2].text)
 
 if __name__ == "__main__":
     # execute only if run as a script
