@@ -8,6 +8,7 @@ from os import mkdir
 from os.path import exists
 import requests
 from zeep import Client, xsd
+from lxml import etree
 
 def getTwitchLogin():
   username = input("What is your Twitch username? ")
@@ -46,12 +47,23 @@ def main():
   client = Client('https://addons.forgesvc.net/AddOnService.svc?singleWsdl')
 
   with client.options(raw_response=True):
-      client.service2 = client.bind('AddOnService', 'WsHttpAddOnServiceEndpoint')
-      response = client.service2.ListFeeds()
+    client.service2 = client.bind('AddOnService', 'WsHttpAddOnServiceEndpoint')
+    header = xsd.Element(
+      '{http://test.python-zeep.org}auth',
+        xsd.ComplexType([
+          xsd.Element(
+            '{http://test.python-zeep.org}username',
+            xsd.String()),
+        ])
+    )
+    header_value = header(username='mvantellingen')
+    payload = client.create_message(client.service2, 'ListFeeds', _soapheaders=[header_value])
 
-      # response is now a regular requests.Response object
-      print(response.status_code)
-      print(response.content)
+    print(etree.tostring(payload, pretty_print=True).decode())
+
+    # response is now a regular requests.Response object
+    # print(response.status_code)
+    # print(response.content)
 
 if __name__ == "__main__":
     # execute only if run as a script
