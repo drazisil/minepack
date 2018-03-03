@@ -32,7 +32,7 @@ def updateModListJSON(curseCompleteModListURL, modListJSONPath):
     print('Mod list JSON not exist, fetching it')
     r = requests.get(curseCompleteModListURL)
     decompressedData = decompress(r.content)
-    modListJSON = json.loads(decompressedData)
+    modListJSON = json.loads(decompressedData.decode())
     with open(modListJSONPath, 'wb') as f:
       f.write(decompressedData)
   return modListJSON
