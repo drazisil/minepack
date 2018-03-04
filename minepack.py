@@ -16,11 +16,13 @@ def getTwitchLogin():
   if getenv("USERNAME"):
     username = getenv("USERNAME")
   else:
-    username = input("What is your Twitch username? ")
+    username = ui.ask_string("What is your Twitch username? ")
   
   if getenv("PASSWORD"):
     password = getenv("PASSWORD")
   else:
+    # ui needs support for ask_password
+    # https://github.com/SuperTanker/python-cli-ui/issues/16
     password = getpass.getpass()
 
   if len(username) == 0 or len(password) == 0:
@@ -45,7 +47,7 @@ def getTokenFromTwitch(username, password):
   return userID, token
 
 def getAddonID():
-  addonID = input("What the modpack id? ")
+  addonID = ui.ask_string("What the modpack id? ")
   return addonID
 
 def createCacheDirectory(cacheDirectyPath):
