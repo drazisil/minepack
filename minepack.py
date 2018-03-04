@@ -8,6 +8,7 @@ from os import mkdir, getenv
 from os.path import exists
 import requests
 import xml.etree.ElementTree as ET
+import ui
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv(), verbose=True)
 
@@ -107,8 +108,15 @@ def main():
 
   root = ET.fromstring(fileListingXML)
 
+  modPackVersions = {}
+
   for child in root[1][0][0]:
-    print(child[2].text)
+    downloadURL = child[2].text
+    modPackVersions[downloadURL] = downloadURL
+
+  selected_fruit = ui.ask_choice("Choose a fruit", sorted(modPackVersions.keys()))
+
+  print(modPackVersions[selected_fruit])
 
 if __name__ == "__main__":
     # execute only if run as a script

@@ -15,6 +15,7 @@ python_version = "3.5"
 requests = "*"
 python-dotenv = "*"
 xmltodict = "*"
+python-cli-ui = "*"
 
 
 [dev-packages]
