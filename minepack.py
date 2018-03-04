@@ -93,10 +93,27 @@ def getAllFilesForAddon(userID, token, addonID):
   r.headers.get('content-type')
   return(r.text)
 
-curseCompleteModListURL = "http://clientupdate-v6.cursecdn.com/feed/addons/432/v10/complete.json.bz2"
-modListJSONPath = 'cache/complete.json'
+def updateAddonsFileListCache(addonID, addonFilesListXML):
+  with open('cache/' + str(addonID) + '.xml', 'w') as f:
+    f.write(addonFilesListXML)
+  pass
+
+
+def getDownloadLinks(fileListingXML):
+  root = ET.fromstring(fileListingXML)
+
+  modPackVersions = {}
+
+  for child in root[1][0][0]:
+    downloadURL = child[2].text
+    modPackVersions[downloadURL] = downloadURL
+  
+  return modPackVersions
 
 def main():
+  curseCompleteModListURL = "http://clientupdate-v6.cursecdn.com/feed/addons/432/v10/complete.json.bz2"
+  modListJSONPath = 'cache/complete.json'
+
   createCacheDirectory('cache')
   modListJSON = updateModListJSON(curseCompleteModListURL, modListJSONPath)
   print(len(modListJSON['data']))
@@ -108,13 +125,9 @@ def main():
 
   fileListingXML = getAllFilesForAddon(userID, token, addonID)
 
-  root = ET.fromstring(fileListingXML)
+  updateAddonsFileListCache(addonID, fileListingXML)
 
-  modPackVersions = {}
-
-  for child in root[1][0][0]:
-    downloadURL = child[2].text
-    modPackVersions[downloadURL] = downloadURL
+  modPackVersions = getDownloadLinks(fileListingXML)
 
   selected_fruit = ui.ask_choice("Choose a fruit", sorted(modPackVersions.keys()))
 
