@@ -5,6 +5,8 @@
 // COMPLETE_URL = DEFAULT_URL + "complete.json.bz2"
 // HOURLY_URL = DEFAULT_URL + "hourly.json.bz2"
 
+// https://clientupdate-v6.cursecdn.com/feed/gameversions/432/v10/gameversions.json.bz2
+
 // http://clientupdate-v6.cursecdn.com/feed/addons/432/v10/complete.json.bz2
 
 // "CategorySection": / "Name": "Modpacks"
