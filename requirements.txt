@@ -10,10 +10,10 @@ isodate==0.6.0
 python-cli-ui==0.6.1
 python-dotenv==0.8.0
 pytz==2018.3
-requests==2.18.4
+requests==2.20.0
 requests-toolbelt==0.8.0
 six==1.11.0
 tabulate==0.8.2
 Unidecode==1.0.22
-urllib3==1.22
+urllib3==1.23
 xmltodict==0.11.0
